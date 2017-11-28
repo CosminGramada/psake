@@ -60,7 +60,11 @@ task Compile `
 			-description "Compile the code" `
 			-requiredVariables solutionFile, buildConfiguration, buildPlatform, tempOutputDirectory `
 {
-	Write-Host $compileMessage
+	Write-Host "Performing dotnet restore"
+	Exec {
+		dotnet restore $solutionFile
+	}
+	Write-Host "Building the solution"
 	Exec {
 		& "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\msbuild.exe" `
 			$solutionFile `
