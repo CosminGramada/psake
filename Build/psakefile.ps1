@@ -66,8 +66,7 @@ task Compile `
 	}
 	Write-Host "Building the solution"
 	Exec {
-		& "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\msbuild.exe" `
-			$solutionFile `
+		msbuild.exe $solutionFile `
 			"/p:Configuration=$buildConfiguration;Platform=$buildPlatform;OutDir=$tempOutputDirectory"
 	}
 	
