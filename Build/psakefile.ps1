@@ -106,10 +106,10 @@ task Test `
 
 	$dll = "$solutionDirectory\WebApp.Tests\bin\Debug\WebApp.Tests.dll"
 
-
+	$testCoverageReportPath = "$testResultsDirectory\OpenCover.xml"
 	Exec {
 		&$openCoverExe -target:$NUnitExe `
-						-output:"$testResultsDirectory\OpenCover.xml" `
+						-output:"$testCoverageReportPath" `
 						-register:user `
 						-filter:"+[*]* -[*.Tests]*" `
 						-excludebyattribute:"System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute" `
@@ -124,7 +124,39 @@ task Test `
 
 	Write-Host "$reportGeneratorExe $testResultsDirectory\OpenCover.xml $testResultsDirectory"
 
+	$htmlReport = "$testResultsDirectory\Html"
+
+	if (!(Test-Path $htmlReport))
+	{
+		Write-Host "Creating test results directory located at $htmlReport"
+		mkdir $htmlReport | Out-Null
+	}
+
+	$coverage = [xml](Get-Content -Path $testCoverageReportPath)
+
+	$coverageSummary = $coverage.CoverageSession.Summary
+
+	# Write class coverage
+	Write-Host "##teamcity[buildStatisticValue key='CodeCoverageAbsCCovered' value='$($coverageSummary.visitedClasses)']"
+	Write-Host "##teamcity[buildStatisticValue key='CodeCoverageAbsCTotal' value='$($coverageSummary.numClasses)']"
+	Write-Host ("##teamcity[buildStatisticValue key='CodeCoverageC' value='{0:N2}']" -f (($coverageSummary.visitedClasses / $coverageSummary.numClasses)*100))
+
+	# Report method coverage
+	Write-Host "##teamcity[buildStatisticValue key='CodeCoverageAbsMCovered' value='$($coverageSummary.visitedMethods)']"
+	Write-Host "##teamcity[buildStatisticValue key='CodeCoverageAbsMTotal' value='$($coverageSummary.numMethods)']"
+	Write-Host ("##teamcity[buildStatisticValue key='CodeCoverageM' value='{0:N2}']" -f (($coverageSummary.visitedMethods / $coverageSummary.numMethods)*100))
+
+	# Report branch coverage
+	Write-Host "##teamcity[buildStatisticValue key='CodeCoverageAbsBCovered' value='$($coverageSummary.visitedBranchPoints)']"
+	Write-Host "##teamcity[buildStatisticValue key='CodeCoverageAbsBTotal' value='$($coverageSummary.numBranchPoints)']"
+	Write-Host ("##teamcity[buildStatisticValue key='CodeCoverageB' value='{0:N2}']" -f (($coverageSummary.visitedBranchPoints / $coverageSummary.numBranchPoints)*100))
+
+	# Report Statement coverage
+	Write-Host "##teamcity[buildStatisticValue key='CodeCoverageAbsSCovered' value='$($coverageSummary.visitedSequencePoints)']"
+	Write-Host "##teamcity[buildStatisticValue key='CodeCoverageAbsSTotal' value='$($coverageSummary.numSequencePoints)']"
+	Write-Host ("##teamcity[buildStatisticValue key='CodeCoverageS' value='{0:N2}']" -f (($coverageSummary.visitedSequencePoints / $coverageSummary.numSequencePoints)*100))
+
 	Exec {
-		&$reportGeneratorExe -reports:"$testResultsDirectory\OpenCover.xml" -targetdir:"$testResultsDirectory\Html"
+		&$reportGeneratorExe -reports:"$testResultsDirectory\OpenCover.xml" -targetdir:"$htmlReport"
 	}
 }
