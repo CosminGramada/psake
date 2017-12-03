@@ -17,6 +17,9 @@ Properties {
 	$packagesPath = "$solutionDirectory\packages"
 	$NUnitExe = ((Get-ChildItem ($packagesPath + "\Nunit.ConsoleRunner*")).FullName | Sort-Object $_ | select -Last 1) + "\Tools\nunit3-console.exe"
 
+	$openCoverExe = ((Get-ChildItem ($packagesPath + "\OpenCover*")).FullName | Sort-Object $_ | select -Last 1) + "\Tools\opencover.console.exe"
+	$reportGeneratorExe = ((Get-ChildItem ($packagesPath + "\ReportGenerator*")).FullName | Sort-Object $_ | select -Last 1) + "\Tools\reportgenerator.exe"
+
 	#MSBuild parameters
 	$buildConfiguration = "Release"
 	$buildPlatform = "Any CPU"
@@ -103,6 +106,25 @@ task Test `
 
 	$dll = "$solutionDirectory\WebApp.Tests\bin\Debug\WebApp.Tests.dll"
 
+
 	Exec {
-		&$NUnitExe $dll --work=$testResultsDirectory }
+		&$openCoverExe -target:$NUnitExe `
+						-targetargs:"$dll --work=$testResultsDirectory" `
+						-output:$testResultsDirectory\OpenCover.xml `
+						-register:user `
+						-filter:"+[*]* -[*.Tests]*" `
+						-excludebyattribute:"System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute" `
+						-excludebyfile:"*\*Designer.cs;*\*.g.cs;*\*.g.i.cs" `
+						-skipautoprops `
+						-mergebyhash `
+						-mergeoutput `
+						-hideskipped:All `
+						-returntargetcode `
+	}
+
+	Write-Host "$reportGeneratorExe $testResultsDirectory\OpenCover.xml $testResultsDirectory"
+
+	Exec {
+		&$reportGeneratorExe -reports:$testResultsDirectory\OpenCover.xml -targetdir:$testResultsDirectory\Html
+	}
 }
