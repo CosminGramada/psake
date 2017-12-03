@@ -15,7 +15,7 @@ Properties {
 	$testResultsDirectory = "$outputDirectory\TestResults"
 
 	$packagesPath = "$solutionDirectory\packages"
-	$NUnitExe = (Find-PackagePath $packagesPath "NUnit.ConsoleRunner") + "\Tools\nunit3-console.exe"
+	$NUnitExe = ((Get-ChildItem ($packagesPath + "\Nunit.ConsoleRunner*")).FullName | Sort-Object $_ | select -Last 1) + "\Tools\nunit3-console.exe"
 
 	#MSBuild parameters
 	$buildConfiguration = "Release"
