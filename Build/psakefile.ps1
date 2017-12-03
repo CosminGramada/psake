@@ -77,10 +77,16 @@ task Compile `
 	Exec {
 		dotnet restore $solutionFile
 	}
+
+	Write-Host "Performing nuget restore"
+	Exec {
+		nuget restore $solutionDirectory
+	}
+
 	Write-Host "Building the solution"
 	Exec {
-		#& "C:\BuildTools\MSBuild\15.0\Bin\msbuild.exe" $solutionFile `
-		& msbuild $solutionFile `
+		& "C:\BuildTools\MSBuild\15.0\Bin\msbuild.exe" $solutionFile `
+		#& msbuild $solutionFile `
 			"/p:Configuration=$buildConfiguration;Platform=$buildPlatform;OutDir=$tempOutputDirectory"
 	}
 	
