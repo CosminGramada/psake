@@ -125,6 +125,6 @@ task Test `
 	Write-Host "$reportGeneratorExe $testResultsDirectory\OpenCover.xml $testResultsDirectory"
 
 	Exec {
-		&$reportGeneratorExe -reports:$testResultsDirectory\OpenCover.xml -targetdir:$testResultsDirectory\Html
+		&$reportGeneratorExe -reports:"$testResultsDirectory\OpenCover.xml" -targetdir:"$testResultsDirectory\Html"
 	}
 }
