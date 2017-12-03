@@ -102,6 +102,7 @@ task Test `
 	$dll = "$solutionDirectory\WebApp.Tests\bin\Debug\WebApp.Tests.dll"
 
 	$testCoverageReportPath = "$testResultsDirectory\OpenCover.xml"
+
 	Exec {
 		&$openCoverExe -target:$NUnitExe `
 						-output:"$testCoverageReportPath" `
@@ -115,7 +116,7 @@ task Test `
 						-hideskipped:All `
 						-returntargetcode `
 						-targetargs:"$dll --work=$testResultsDirectory" `
-	} -ErrorAction Continue
+	} -ErrorAction SilentlyContinue
 
 	
 }
