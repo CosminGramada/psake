@@ -109,8 +109,7 @@ task Test `
 
 	Exec {
 		&$openCoverExe -target:$NUnitExe `
-						-targetargs:"$dll --work=$testResultsDirectory" `
-						-output:$testResultsDirectory\OpenCover.xml `
+						-output:"$testResultsDirectory\OpenCover.xml" `
 						-register:user `
 						-filter:"+[*]* -[*.Tests]*" `
 						-excludebyattribute:"System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute" `
@@ -120,6 +119,7 @@ task Test `
 						-mergeoutput `
 						-hideskipped:All `
 						-returntargetcode `
+						-targetargs:"$dll --work=$testResultsDirectory" `
 	}
 
 	Write-Host "$reportGeneratorExe $testResultsDirectory\OpenCover.xml $testResultsDirectory"
