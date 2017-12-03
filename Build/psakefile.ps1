@@ -101,7 +101,7 @@ task Test `
 
 	Write-Host $testResultsDirectory
 
-	$dll = "$tempOutputDirectory\WebApp.Tests.dll"
+	$dll = "$solutionDirectory\WebApp.Tests\bin\Debug\WebApp.Tests.dll"
 
 	Exec {
 		&$NUnitExe $dll --work=$testResultsDirectory }
