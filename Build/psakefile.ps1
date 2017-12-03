@@ -35,11 +35,6 @@ task Init `
 	Assert -conditionToCheck ("x86", "x64", "Any CPU" -contains $buildPlatform) `
 			-failureMessage "Invalid build platform '$buildPlatform'. Valid values are 'x86', 'x64', or 'Any CPU'"
 
-	#Check that all tools are available
-	Write-Host "Checking that all required tools are available."
-
-	Assert (Test-Path $NUnitExe) "Nunit Console could not be found"
-
 	#remove previous build results
 	if(Test-Path $outputDirectory)
 	{
