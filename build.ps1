@@ -9,7 +9,7 @@ $psakeModule = (Get-ChildItem (".\packages\psake*\tools\psake\psake.psm1")).Full
 Import-Module $psakeModule
 
 Invoke-psake -docs
-Invoke-psake -buildFile *\psakefile.ps1 `
+Invoke-psake -buildFile .\Build\psakefile.ps1 `
 			 -taskList Test `
 			 -framework 4.6.1 `
 			 -properties @{

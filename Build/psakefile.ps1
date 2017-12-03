@@ -1,4 +1,6 @@
-﻿Properties {
+﻿Include ".\helpers.ps1"
+
+Properties {
 	#Text constants
 	$testMessage = 'Executed Test!'
 	$compileMessage = 'Executed Compile!'
@@ -9,12 +11,18 @@
 	$outputDirectory = "$solutionDirectory\.build"
 	$tempOutputDirectory = "$solutionDirectory\temp"
 
+	#Test results
+	$testResultsDirectory = "$outputDirectory\TestResults"
+
+	$packagesPath = "$solutionDirectory\packages"
+	$NUnitExe = (Find-PackagePath $packagesPath "NUnit.ConsoleRunner") + "\Tools\nunit3-console.exe"
+
 	#MSBuild parameters
 	$buildConfiguration = "Release"
 	$buildPlatform = "Any CPU"
 }
 
-FormatTaskName "`r`n`r`n========== Executing {0} Task =========="
+FormatTaskName "`r`n`r`n`r`n========== Executing {0} Task =========="
 
 task default -depends Test
 
@@ -26,6 +34,11 @@ task Init `
 			-failureMessage "Invalid build configuration '$buildConfiguration'. Valid values are 'Debug' or 'Release'."
 	Assert -conditionToCheck ("x86", "x64", "Any CPU" -contains $buildPlatform) `
 			-failureMessage "Invalid build platform '$buildPlatform'. Valid values are 'x86', 'x64', or 'Any CPU'"
+
+	#Check that all tools are available
+	Write-Host "Checking that all required tools are available."
+
+	Assert (Test-Path $NUnitExe) "Nunit Console could not be found"
 
 	#remove previous build results
 	if(Test-Path $outputDirectory)
@@ -66,7 +79,8 @@ task Compile `
 	}
 	Write-Host "Building the solution"
 	Exec {
-		& "C:\BuildTools\MSBuild\15.0\Bin\msbuild.exe" $solutionFile `
+		#& "C:\BuildTools\MSBuild\15.0\Bin\msbuild.exe" $solutionFile `
+		& msbuild $solutionFile `
 			"/p:Configuration=$buildConfiguration;Platform=$buildPlatform;OutDir=$tempOutputDirectory"
 	}
 	
@@ -77,5 +91,17 @@ task Test `
 			-depends Compile, Clean `
 			-description "Run unit tests" `
 {
-	Write-Host $testMessage
+	#Create the test results directory if needed
+	if (!(Test-Path $testResultsDirectory))
+	{
+		Write-Host "Creating test results directory located at $testResultsDirectory"
+		mkdir $testResultsDirectory | Out-Null
+	}
+
+	Write-Host $testResultsDirectory
+
+	$dll = "$tempOutputDirectory\WebApp.Tests.dll"
+
+	Exec {
+		&$NUnitExe $dll --work=$testResultsDirectory }
 }

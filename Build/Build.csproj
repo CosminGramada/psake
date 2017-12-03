@@ -43,6 +43,7 @@
     <None Include="..\build.ps1">
       <Link>build.ps1</Link>
     </None>
+    <None Include="helpers.ps1" />
     <None Include="psakefile.ps1" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
