@@ -22,7 +22,7 @@ Properties {
 
 FormatTaskName "`r`n`r`n`r`n========== Executing {0} Task =========="
 
-task default -depends Test
+task default -depends CodeCoverage
 
 task Init `
 			-description "Initializes the build by removing previous artifacts and creating output directories" `
@@ -52,14 +52,6 @@ task Init `
 	New-Item $tempOutputDirectory -ItemType Directory | Out-Null
 }
 
-
-task Clean `
-			-description "Remove temporary files" `
-{
-	
-}
-
-
 #Restore and Build solution
 task Compile `
 			-depends Init `
@@ -87,7 +79,7 @@ task Compile `
 
 #Run tests
 task Test `
-			-depends Compile, Clean `
+			-depends Compile `
 			-description "Run unit tests" `
 			-continueOnError
 {
@@ -121,8 +113,9 @@ task Test `
 }
 
 task CodeCoverage `
-				-depends Test `
-				-description "Collect code coverage"
+				-depends Test, Compile `
+				-description "Collect code coverage" `
+				-requiredVariables testResultsDirectory `
 {
 	$htmlReport = "$testResultsDirectory\Html"
 
