@@ -25,4 +25,4 @@ Invoke-psake -buildFile .\Build\psakefile.ps1 `
 Write-Host "`r`n`r`n===== Build exit code:" $LASTEXITCODE "====="
 
 #Propagating the exit code so that builds actually fail when there is a problem
-exit $LASTEXITCODE
+#exit $LASTEXITCODE
