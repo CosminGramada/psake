@@ -117,8 +117,13 @@ task Test `
 						-targetargs:"$dll --work=$testResultsDirectory" `
 	}
 
-	Write-Host "$reportGeneratorExe $testResultsDirectory\OpenCover.xml $testResultsDirectory"
+	
+}
 
+task CodeCoverage `
+				-depends Test `
+				-description "Collect code coverage"
+{
 	$htmlReport = "$testResultsDirectory\Html"
 
 	if (!(Test-Path $htmlReport))

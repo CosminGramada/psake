@@ -10,10 +10,9 @@ Import-Module $psakeModule
 
 Invoke-psake -docs
 Invoke-psake -buildFile .\Build\psakefile.ps1 `
-			 -taskList Test `
+			 -taskList CodeCoverage `
 			 -framework 4.6.1 `
 			 -properties @{
-				 "testMessage"="Overriden Executed Testadf!"
 				 "buildConfiguration" = "Release"
 				 "buildPlatform" = "Any CPU"
 			 }`
