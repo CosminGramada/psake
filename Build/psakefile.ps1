@@ -89,6 +89,7 @@ task Compile `
 task Test `
 			-depends Compile, Clean `
 			-description "Run unit tests" `
+			-continueOnError
 {
 	#Create the test results directory if needed
 	if (!(Test-Path $testResultsDirectory))
@@ -103,27 +104,20 @@ task Test `
 
 	$testCoverageReportPath = "$testResultsDirectory\OpenCover.xml"
 
-	try{
-		Exec {
-			&$openCoverExe -target:$NUnitExe `
-							-output:"$testCoverageReportPath" `
-							-register:user `
-							-filter:"+[*]* -[*.Tests]*" `
-							-excludebyattribute:"System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute" `
-							-excludebyfile:"*\*Designer.cs;*\*.g.cs;*\*.g.i.cs" `
-							-skipautoprops `
-							-mergebyhash `
-							-mergeoutput `
-							-hideskipped:All `
-							-returntargetcode `
-							-targetargs:"$dll --work=$testResultsDirectory" `
-		} -ErrorAction SilentlyContinue
-	}
-	catch
-	{
-		Write-Host "Something went wrong"
-	}
-	
+	Exec {
+		&$openCoverExe -target:$NUnitExe `
+						-output:"$testCoverageReportPath" `
+						-register:user `
+						-filter:"+[*]* -[*.Tests]*" `
+						-excludebyattribute:"System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute" `
+						-excludebyfile:"*\*Designer.cs;*\*.g.cs;*\*.g.i.cs" `
+						-skipautoprops `
+						-mergebyhash `
+						-mergeoutput `
+						-hideskipped:All `
+						-returntargetcode `
+						-targetargs:"$dll --work=$testResultsDirectory" `
+	} -ErrorAction SilentlyContinue
 }
 
 task CodeCoverage `
