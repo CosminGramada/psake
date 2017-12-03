@@ -103,21 +103,26 @@ task Test `
 
 	$testCoverageReportPath = "$testResultsDirectory\OpenCover.xml"
 
-	Exec {
-		&$openCoverExe -target:$NUnitExe `
-						-output:"$testCoverageReportPath" `
-						-register:user `
-						-filter:"+[*]* -[*.Tests]*" `
-						-excludebyattribute:"System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute" `
-						-excludebyfile:"*\*Designer.cs;*\*.g.cs;*\*.g.i.cs" `
-						-skipautoprops `
-						-mergebyhash `
-						-mergeoutput `
-						-hideskipped:All `
-						-returntargetcode `
-						-targetargs:"$dll --work=$testResultsDirectory" `
-	} -ErrorAction SilentlyContinue
-
+	try{
+		Exec {
+			&$openCoverExe -target:$NUnitExe `
+							-output:"$testCoverageReportPath" `
+							-register:user `
+							-filter:"+[*]* -[*.Tests]*" `
+							-excludebyattribute:"System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute" `
+							-excludebyfile:"*\*Designer.cs;*\*.g.cs;*\*.g.i.cs" `
+							-skipautoprops `
+							-mergebyhash `
+							-mergeoutput `
+							-hideskipped:All `
+							-returntargetcode `
+							-targetargs:"$dll --work=$testResultsDirectory" `
+		} -ErrorAction SilentlyContinue
+	}
+	catch
+	{
+		Write-Host "Something went wrong"
+	}
 	
 }
 
