@@ -31,7 +31,7 @@ namespace WebApp.Tests.Controllers
             ViewResult result = controller.About() as ViewResult;
 
             // Assert
-            Assert.AreEqual("Your application description page.", result.ViewBag.Message);
+            Assert.AreEqual("Your application description pages.", result.ViewBag.Message);
         }
 
         [Test]

@@ -1,11 +1,6 @@
 ﻿Include ".\helpers.ps1"
 
 Properties {
-	#Text constants
-	$testMessage = 'Executed Test!'
-	$compileMessage = 'Executed Compile!'
-	$cleanMessage = 'Executed Clean!'
-
 	#Solution and output directories
 	$solutionDirectory = (Get-Item $solutionFile).DirectoryName
 	$outputDirectory = "$solutionDirectory\.build"
@@ -61,7 +56,7 @@ task Init `
 task Clean `
 			-description "Remove temporary files" `
 {
-	Write-Host $cleanMessage
+	
 }
 
 
