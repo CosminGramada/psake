@@ -115,7 +115,7 @@ task Test `
 						-hideskipped:All `
 						-returntargetcode `
 						-targetargs:"$dll --work=$testResultsDirectory" `
-	}
+	} -ErrorAction Continue
 
 	
 }
@@ -157,6 +157,6 @@ task CodeCoverage `
 	Write-Host ("##teamcity[buildStatisticValue key='CodeCoverageS' value='{0:N2}']" -f (($coverageSummary.visitedSequencePoints / $coverageSummary.numSequencePoints)*100))
 
 	Exec {
-		&$reportGeneratorExe -reports:"$testResultsDirectory\OpenCover.xml" -targetdir:"$htmlReport"
-	}
+		&$reportGeneratorExe -reports:"$testResultsDirectory\OpenCover.xml" -targetdir:"$htmlReport" 
+	} 
 }
